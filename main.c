@@ -2,6 +2,9 @@
 #include<stdlib.h>
 #include<string.h>
 #define MaxCaracteres 40
+#define MAX_MEDICOS 20
+#define MAX_PACIENTES 50
+#define MAX_CONSULTAS 100
 typedef struct
     {
         int id;
@@ -59,6 +62,63 @@ void incluirMedico() {
     fgets(m.especialidade, MaxCaracteres, stdin);
     fwrite(&m, sizeof(medico), 1, arq);
     fclose(arq);
+}
+
+
+void alterarPaciente() {
+    FILE *arq = fopen("pacientes.bin", "rb+"), *temp;
+    if (!arq) return;
+    paciente p;
+    int idBusca, encontrado = 0;
+    char nomeBusca[MaxCaracteres];
+    printf("Digite o ID ou Nome do paciente a alterar: ");
+    fgets(nomeBusca, MaxCaracteres, stdin);
+    nomeBusca[strcspn(nomeBusca, "\n")] = 0;
+    while (fread(&p, sizeof(paciente), 1, arq)) {
+        if (p.id == atoi(nomeBusca) || strcmp(p.nome, nomeBusca) == 0) {
+            printf("Novo nome: ");
+            fgets(p.nome, MaxCaracteres, stdin);
+            printf("Nova identidade: ");
+            fgets(p.identidade, MaxCaracteres, stdin);
+            printf("Novo endereço: ");
+            fgets(p.endereco, MaxCaracteres, stdin);
+            printf("Novo telefone: ");
+            fgets(p.telefone, MaxCaracteres, stdin);
+            printf("Novo sexo: ");
+            fgets(p.sexo, MaxCaracteres, stdin);
+            fseek(arq, -sizeof(paciente), SEEK_CUR);
+            fwrite(&p, sizeof(paciente), 1, arq);
+            encontrado = 1;
+            break;
+        }
+    }
+    fclose(arq);
+    if (!encontrado) printf("Paciente nao encontrado.\n");
+}
+
+void alterarMedico() {
+    FILE *arq = fopen("medicos.bin", "rb+"), *temp;
+    if (!arq) return;
+    medico m;
+    int idBusca, encontrado = 0;
+    char nomeBusca[MaxCaracteres];
+    printf("Digite o ID ou Nome do médico a alterar: ");
+    fgets(nomeBusca, MaxCaracteres, stdin);
+    nomeBusca[strcspn(nomeBusca, "\n")] = 0;
+    while (fread(&m, sizeof(medico), 1, arq)) {
+        if (m.id == atoi(nomeBusca) || strcmp(m.nome, nomeBusca) == 0) {
+            printf("Novo nome: ");
+            fgets(m.nome, MaxCaracteres, stdin);
+            printf("Nova especialidade: ");
+            fgets(m.especialidade, MaxCaracteres, stdin);
+            fseek(arq, -sizeof(medico), SEEK_CUR);
+            fwrite(&m, sizeof(medico), 1, arq);
+            encontrado = 1;
+            break;
+        }
+    }
+    fclose(arq);
+    if (!encontrado) printf("Médico não encontrado.\n");
 }
 
 void listarPacientes() {
