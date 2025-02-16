@@ -64,6 +64,46 @@ void incluirMedico() {
     fclose(arq);
 }
 
+void pesquisarPaciente() {
+    FILE *arq = fopen("pacientes.bin", "rb");
+    if (!arq) return;
+    paciente p;
+    char busca[MaxCaracteres];
+    int encontrado = 0;
+    printf("Digite o ID ou Nome do paciente a pesquisar: ");
+    fgets(busca, MaxCaracteres, stdin);
+    busca[strcspn(busca, "\n")] = 0;
+    while (fread(&p, sizeof(paciente), 1, arq)) {
+        if (p.id == atoi(busca) || strcmp(p.nome, busca) == 0) {
+            printf("ID: %d\nNome: %s\nIdentidade: %s\nEndereço: %s\nTelefone: %s\nSexo: %s\n", 
+                p.id, p.nome, p.identidade, p.endereco, p.telefone, p.sexo);
+            encontrado = 1;
+            break;
+        }
+    }
+    fclose(arq);
+    if (!encontrado) printf("Paciente não encontrado.\n");
+}
+
+void pesquisarMedico() {
+    FILE *arq = fopen("medicos.bin", "rb");
+    if (!arq) return;
+    medico m;
+    char busca[MaxCaracteres];
+    int encontrado = 0;
+    printf("Digite o ID ou Nome do médico a pesquisar: ");
+    fgets(busca, MaxCaracteres, stdin);
+    busca[strcspn(busca, "\n")] = 0;
+    while (fread(&m, sizeof(medico), 1, arq)) {
+        if (m.id == atoi(busca) || strcmp(m.nome, busca) == 0) {
+            printf("ID: %d\nNome: %s\nEspecialidade: %s\n", m.id, m.nome, m.especialidade);
+            encontrado = 1;
+            break;
+        }
+    }
+    fclose(arq);
+    if (!encontrado) printf("Médico não encontrado.\n");
+}
 
 void alterarPaciente() {
     FILE *arq = fopen("pacientes.bin", "rb+"), *temp;
@@ -191,9 +231,11 @@ int main()
                 printf("Opcao de Paciente selecionada.\n");
                 int opcaoPaciente;
                 do {
-                    printf("1 - Incluir Paciente\n");
-                    printf("2 - Listar Pacientes\n");
-                    printf("3 - Voltar\n");
+                    printf("1 - Incluir\n");
+                    printf("2 - Listar\n");
+                    printf("3 - Alterar\n");
+                    printf("4 - Pesquisar\n");
+                    printf("5 - Voltar\n");
                     printf("Escolha uma opção: ");
                     scanf("%d", &opcaoPaciente);
                     getchar();
@@ -201,16 +243,21 @@ int main()
                         incluirPaciente();
                     } else if (opcaoPaciente == 2) {
                         listarPacientes();
+                    } else if (opcaoPaciente == 3) {
+                        alterarPaciente();
+                    } else if(opcaoPaciente == 4) {
+                        pesquisarPaciente();
                     }
-                } while (opcaoPaciente != 3);
+                } while (opcaoPaciente != 5);
                 break;
             case 3:
                 printf("Opcao de Medico selecionada.\n");
                 int opcaoMedico;
                 do {
-                    printf("1 - Incluir Médico\n");
-                    printf("2 - Listar Médicos\n");
-                    printf("3 - Voltar\n");
+                    printf("1 - Incluir Medico\n");
+                    printf("2 - Listar Medicos\n");
+                    printf("3 - Alterar medico");
+                    printf("4 - Voltar\n");
                     printf("Escolha uma opção: ");
                     scanf("%d", &opcaoMedico);
                     getchar();
@@ -218,8 +265,11 @@ int main()
                         incluirMedico();
                     } else if (opcaoMedico == 2) {
                         listarMedicos();
+                    } else if (opcaoMedico == 3) {
+                        alterarMedico();
                     }
-                } while (opcaoMedico != 3);
+
+                } while (opcaoMedico != 4);
                 break;
             case 4:
                 printf("Opcao de Relatorios selecionada.\n");
