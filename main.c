@@ -91,7 +91,7 @@ void pesquisarMedico() {
     medico m;
     char busca[MaxCaracteres];
     int encontrado = 0;
-    printf("Digite o ID ou Nome do médico a pesquisar: ");
+    printf("Digite o ID ou Nome do medico a pesquisar: ");
     fgets(busca, MaxCaracteres, stdin);
     busca[strcspn(busca, "\n")] = 0;
     while (fread(&m, sizeof(medico), 1, arq)) {
@@ -178,7 +178,45 @@ void listarMedicos() {
     fclose(arq);
 }
 
+void excluirPaciente() {
+    FILE *arq = fopen("pacientes.bin", "rb");
+    FILE *temp = fopen("temp.bin", "wb");
+    if (!arq || !temp) return;
+    paciente p;
+    int id;
+    printf("Digite o ID do paciente a excluir: ");
+    scanf("%d", &id);
+    getchar();
+    while (fread(&p, sizeof(paciente), 1, arq)) {
+        if (p.id != id) {
+            fwrite(&p, sizeof(paciente), 1, temp);
+        }
+    }
+    fclose(arq);
+    fclose(temp);
+    remove("pacientes.bin");
+    rename("temp.bin", "pacientes.bin");
+}
 
+void excluirMedico() {
+    FILE *arq = fopen("medicos.bin", "rb");
+    FILE *temp = fopen("temp.bin", "wb");
+    if (!arq || !temp) return;
+    medico m;
+    int id;
+    printf("Digite o ID do médico a excluir: ");
+    scanf("%d", &id);
+    getchar();
+    while (fread(&m, sizeof(medico), 1, arq)) {
+        if (m.id != id) {
+            fwrite(&m, sizeof(medico), 1, temp);
+        }
+    }
+    fclose(arq);
+    fclose(temp);
+    remove("medicos.bin");
+    rename("temp.bin", "medicos.bin");
+}
 
 
 int main()
@@ -228,14 +266,15 @@ int main()
 
                 break;
             case 2:
-                printf("Opcao de Paciente selecionada.\n");
+                printf("Opcao de PACIENTE selecionada.\n");
                 int opcaoPaciente;
                 do {
                     printf("1 - Incluir\n");
                     printf("2 - Listar\n");
                     printf("3 - Alterar\n");
                     printf("4 - Pesquisar\n");
-                    printf("5 - Voltar\n");
+                    printf("5 - Excluir\n");
+                    printf("6 - Voltar\n");
                     printf("Escolha uma opção: ");
                     scanf("%d", &opcaoPaciente);
                     getchar();
@@ -247,30 +286,37 @@ int main()
                         alterarPaciente();
                     } else if(opcaoPaciente == 4) {
                         pesquisarPaciente();
+                    } else if(opcaoPaciente == 5) {
+                        excluirPaciente();
                     }
-                } while (opcaoPaciente != 5);
+                } while (opcaoPaciente != 6);
                 break;
             case 3:
-                printf("Opcao de Medico selecionada.\n");
-                int opcaoMedico;
-                do {
-                    printf("1 - Incluir Medico\n");
-                    printf("2 - Listar Medicos\n");
-                    printf("3 - Alterar medico");
-                    printf("4 - Voltar\n");
-                    printf("Escolha uma opção: ");
-                    scanf("%d", &opcaoMedico);
-                    getchar();
-                    if (opcaoMedico == 1) {
-                        incluirMedico();
-                    } else if (opcaoMedico == 2) {
-                        listarMedicos();
-                    } else if (opcaoMedico == 3) {
-                        alterarMedico();
-                    }
-
-                } while (opcaoMedico != 4);
-                break;
+            printf("Opcao de MEDICO selecionada.\n");
+            int opcaoMedico;
+            do {
+                printf("1 - Incluir\n");
+                printf("2 - Listar\n");
+                printf("3 - Alterar\n");
+                printf("4 - Pesquisar\n");
+                printf("5 - Excluir\n");
+                printf("6 - Voltar\n");
+                printf("Escolha uma opção: ");
+                scanf("%d", &opcaoMedico);
+                getchar();
+                if (opcaoMedico == 1) {
+                    incluirMedico();
+                } else if (opcaoMedico == 2) {
+                    listarMedico();
+                } else if (opcaoMedico == 3) {
+                    alterarMedico();
+                } else if(opcaoMedico == 4) {
+                    pesquisarMedico();
+                } else if(opcaoMedico == 5) {
+                    excluirMedico();
+                }
+            } while (opcaoMedico != 6);
+            break;
             case 4:
                 printf("Opcao de Relatorios selecionada.\n");
 
