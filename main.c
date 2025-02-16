@@ -169,6 +169,7 @@ void listarPacientes() {
     }
     fclose(arq);
 }
+
 void listarMedicos() {
     FILE *arq = fopen("medicos.bin", "rb");
     medico m;
@@ -217,6 +218,77 @@ void excluirMedico() {
     remove("medicos.bin");
     rename("temp.bin", "medicos.bin");
 }
+
+//TUDO SOBRE CONSULTAS:
+
+void incluirConsulta() {
+    FILE *arq = fopen("consultas.bin", "ab");
+    if (!arq) return;
+    consulta c;
+    printf("Digite o número da consulta: ");
+    scanf("%d", &c.numero);
+    printf("Digite o ID do médico: ");
+    scanf("%d", &c.idMedico);
+    printf("Digite o ID do paciente: ");
+    scanf("%d", &c.idPaciente);
+    printf("Digite o horário da consulta: ");
+    scanf("%s", c.horario);
+    printf("Digite a duração da consulta: ");
+    scanf("%s", c.duracao);
+    printf("Digite a data da consulta: ");
+    scanf("%s", c.data);
+    fwrite(&c, sizeof(consulta), 1, arq);
+    fclose(arq);
+    printf("Consulta cadastrada com sucesso!\n");
+}
+
+void alterarConsulta() {
+    FILE *arq = fopen("consultas.bin", "rb+");
+    if (!arq) return;
+    consulta c;
+    int numero;
+    printf("Digite o número da consulta a alterar: ");
+    scanf("%d", &numero);
+    while (fread(&c, sizeof(consulta), 1, arq)) {
+        if (c.numero == numero) {
+            printf("Consulta encontrada! Digite os novos dados:\n");
+            printf("Digite o ID do médico: ");
+            scanf("%d", &c.idMedico);
+            printf("Digite o ID do paciente: ");
+            scanf("%d", &c.idPaciente);
+            printf("Digite o horário da consulta: ");
+            scanf("%s", c.horario);
+            printf("Digite a duração da consulta: ");
+            scanf("%s", c.duracao);
+            printf("Digite a data da consulta: ");
+            scanf("%s", c.data);
+            fseek(arq, -sizeof(consulta), SEEK_CUR);
+            fwrite(&c, sizeof(consulta), 1, arq);
+            fclose(arq);
+            printf("Consulta alterada com sucesso!\n");
+            return;
+        }
+    }
+    fclose(arq);
+    printf("Consulta não encontrada!\n");
+}
+
+void pesquisarConsulta() {
+    FILE *arq = fopen("consultas.bin", "rb");
+    if (!arq) return;
+    consulta c;
+    int busca;
+    printf("Digite o numero da consulta: ");
+    scanf("%d", &busca);
+    while (fread(&c, sizeof(consulta), 1, arq)) {
+        if ((c.numero == busca)) {
+            printf("Consulta encontrada:\nNúmero: %d\nMédico ID: %d\nPaciente ID: %d\nHorário: %s\nDuração: %s\nData: %s\n", c.numero, c.idMedico, c.idPaciente, c.horario, c.duracao, c.data);
+        }
+    }
+    fclose(arq);
+}
+
+
 void menu(){
     int opcao;
     do{
@@ -235,26 +307,23 @@ void menu(){
                 int opcaoConsulta;
                 do {
                     printf("1 - Incluir\n");
-                    printf("2 - Listar\n");
-                    printf("3 - Alterar\n");
-                    printf("4 - Pesquisar\n");
-                    printf("5 - Excluir\n");
-                    printf("6 - Voltar\n");
+                    printf("2 - Alterar\n");
+                    printf("3 - Pesquisar\n");
+                    printf("4 - Excluir\n");
+                    printf("5 - Voltar\n");
                     printf("Escolha uma opção: ");
                     scanf("%d", &opcaoConsulta);
                     getchar();
                     if (opcaoConsulta == 1) {
                         incluirConsulta();
                     } else if (opcaoConsulta == 2) {
-                        listaConsultas();
-                    } else if (opcaoConsulta == 3) {
                         alterarConsulta();
-                    } else if(opcaoConsulta == 4) {
+                    } else if(opcaoConsulta == 3) {
                         pesquisarConsulta();
-                    } else if(opcaoConsulta == 5) {
+                    } else if(opcaoConsulta == 4) {
                         excluirConsulta();
                     }
-                } while (opcaoConsulta != 6);
+                } while (opcaoConsulta != 5);
                 break;
             case 2:
                 printf("Opcao de PACIENTE selecionada.\n");
@@ -310,7 +379,21 @@ void menu(){
             break;
             case 4:
                 printf("Opcao de Relatorios selecionada.\n");
+                int opcaoRelatorios;
+                do{
+                    printf("1 - Lista de consultas agendadas para o paciente\n");
+                    printf("2 - Lista de consultas agendadas para o medico\n");
+                    printf("3 - Lista de medicos por especialidade\n");
+                    printf("4 - Voltar\n");
+                    scanf("%d",&opcaoRelatorios);
+                    if (opcaoRelatorios == 1){
 
+                    } else if (opcaoRelatorios == 2){
+
+                    } else if (opcaoRelatorios == 3){
+
+                    }
+                } while (opcaoRelatorios != 4);
                 break;
             case 5:
                 printf("Saindo...\n");
@@ -321,6 +404,7 @@ void menu(){
         }
     } while (opcao != 5);
 }
+
 void inciarArquivos(){
     FILE *arqmed = fopen("medicos.bin","r");
     if(arqmed==NULL){
@@ -349,6 +433,7 @@ void inciarArquivos(){
         fclose(arqcons);
     }
 }
+
 int main()
 {
     inciarArquivos();
