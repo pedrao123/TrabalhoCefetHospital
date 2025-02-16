@@ -8,7 +8,7 @@ typedef struct
         char nome[MaxCaracteres] ;
         char especialidade[MaxCaracteres];
     } medico;
-    typedef struct
+typedef struct
     {
         int id;
         char nome[MaxCaracteres];
@@ -17,7 +17,7 @@ typedef struct
         char telefone[MaxCaracteres];
         char sexo[MaxCaracteres];
     }paciente;
-    typedef struct
+typedef struct
     {
         int numero;
         int idMedico;
@@ -26,6 +26,60 @@ typedef struct
         char duracao[MaxCaracteres];
         char data[MaxCaracteres];
     }consulta;
+
+void incluirPaciente() {
+    FILE *arq = fopen("pacientes.bin", "ab");
+    paciente p;
+    printf("Digite o ID do paciente: ");
+    scanf("%d", &p.id);
+    getchar();
+    printf("Digite o nome do paciente: ");
+    fgets(p.nome, MaxCaracteres, stdin);
+    printf("Digite a identidade: ");
+    fgets(p.identidade, MaxCaracteres, stdin);
+    printf("Digite o endereço: ");
+    fgets(p.endereco, MaxCaracteres, stdin);
+    printf("Digite o telefone: ");
+    fgets(p.telefone, MaxCaracteres, stdin);
+    printf("Digite o sexo: ");
+    fgets(p.sexo, MaxCaracteres, stdin);
+    fwrite(&p, sizeof(paciente), 1, arq);
+    fclose(arq);
+}
+
+void incluirMedico() {
+    FILE *arq = fopen("medicos.bin", "ab");
+    medico m;
+    printf("Digite o ID do medico: ");
+    scanf("%d", &m.id);
+    getchar();
+    printf("Digite o nome do medico: ");
+    fgets(m.nome, MaxCaracteres, stdin);
+    printf("Digite a especialidade: ");
+    fgets(m.especialidade, MaxCaracteres, stdin);
+    fwrite(&m, sizeof(medico), 1, arq);
+    fclose(arq);
+}
+
+void listarPacientes() {
+    FILE *arq = fopen("pacientes.bin", "rb");
+    paciente p;
+    while (fread(&p, sizeof(paciente), 1, arq)) {
+        printf("ID: %d, Nome: %s, Identidade: %s, Endereco: %s, Telefone: %s, Sexo: %s\n", p.id, p.nome, p.identidade, p.endereco, p.telefone, p.sexo);
+    }
+    fclose(arq);
+}
+void listarMedicos() {
+    FILE *arq = fopen("medicos.bin", "rb");
+    medico m;
+    while (fread(&m, sizeof(medico), 1, arq)) {
+        printf("ID: %d, Nome: %s, Especialidade: %s\n", m.id, m.nome, m.especialidade);
+    }
+    fclose(arq);
+}
+
+
+
 
 int main()
 {
@@ -75,7 +129,20 @@ int main()
                 break;
             case 2:
                 printf("Opcao de Paciente selecionada.\n");
-
+                int opcaoPaciente;
+                do {
+                    printf("1 - Incluir Paciente\n");
+                    printf("2 - Listar Pacientes\n");
+                    printf("3 - Voltar\n");
+                    printf("Escolha uma opção: ");
+                    scanf("%d", &opcaoPaciente);
+                    getchar();
+                    if (opcaoPaciente == 1) {
+                        incluirPaciente();
+                    } else if (opcaoPaciente == 2) {
+                        listarPacientes();
+                    }
+                } while (opcaoPaciente != 3);
                 break;
             case 3:
                 printf("Opcao de Medico selecionada.\n");
