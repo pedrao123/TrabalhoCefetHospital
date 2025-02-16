@@ -26,6 +26,7 @@ typedef struct
         char duracao[MaxCaracteres];
         char data[MaxCaracteres];
     }consulta;
+
 int main()
 {
     FILE *arqmed = fopen("medicos.bin","r");
@@ -78,7 +79,20 @@ int main()
                 break;
             case 3:
                 printf("Opcao de Medico selecionada.\n");
-
+                int opcaoMedico;
+                do {
+                    printf("1 - Incluir Médico\n");
+                    printf("2 - Listar Médicos\n");
+                    printf("3 - Voltar\n");
+                    printf("Escolha uma opção: ");
+                    scanf("%d", &opcaoMedico);
+                    getchar();
+                    if (opcaoMedico == 1) {
+                        incluirMedico();
+                    } else if (opcaoMedico == 2) {
+                        listarMedicos();
+                    }
+                } while (opcaoMedico != 3);
                 break;
             case 4:
                 printf("Opcao de Relatorios selecionada.\n");
@@ -92,9 +106,5 @@ int main()
                 printf("Opcao invalida.\n");
         }
     } while (opcao != 5);
-
-
-
-
     return 0;
 }
