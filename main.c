@@ -6,29 +6,29 @@
 #define MAX_PACIENTES 50
 #define MAX_CONSULTAS 100
 typedef struct
-    {
-        int id;
-        char nome[MaxCaracteres] ;
-        char especialidade[MaxCaracteres];
-    } medico;
+{
+    int id;
+    char nome[MaxCaracteres] ;
+    char especialidade[MaxCaracteres];
+}medico;
 typedef struct
-    {
-        int id;
-        char nome[MaxCaracteres];
-        char identidade[MaxCaracteres];
-        char endereco[MaxCaracteres];
-        char telefone[MaxCaracteres];
-        char sexo[MaxCaracteres];
-    }paciente;
+{
+    int id;
+    char nome[MaxCaracteres];
+    char identidade[MaxCaracteres];
+    char endereco[MaxCaracteres];
+    char telefone[MaxCaracteres];
+    char sexo[MaxCaracteres];
+}paciente;
 typedef struct
-    {
-        int numero;
-        int idMedico;
-        int idPaciente;
-        char horario[MaxCaracteres];
-        char duracao[MaxCaracteres];
-        char data[MaxCaracteres];
-    }consulta;
+{
+    int numero;
+    int idMedico;
+    int idPaciente;
+    char horario[MaxCaracteres];
+    char duracao[MaxCaracteres];
+    char data[MaxCaracteres];
+}consulta;
 
 void incluirPaciente() {
     FILE *arq = fopen("pacientes.bin", "ab");
@@ -217,37 +217,7 @@ void excluirMedico() {
     remove("medicos.bin");
     rename("temp.bin", "medicos.bin");
 }
-
-
-int main()
-{
-    FILE *arqmed = fopen("medicos.bin","r");
-    if(arqmed==NULL){
-        FILE *arqmed = fopen("medicos.bin","w");
-        fclose(arqmed);
-    }
-    else{
-        fclose(arqmed);
-    }
-
-    FILE *arqpac = fopen("pacientes.bin","r");
-    if(arqmed==NULL){
-        FILE *arqpac = fopen("pacientes.bin","w");
-        fclose(arqpac);
-    }
-    else{
-        fclose(arqpac);
-    }
-
-    FILE *arqcons = fopen("consultas.bin","r");
-    if(arqcons==NULL){
-        FILE *arqcons = fopen("cansultas.bin","w");
-        fclose(arqcons);
-    }
-    else{
-        fclose(arqcons);
-    }
-    
+void menu(){
     int opcao;
     do{
         printf("\nMenu Principal:\n");
@@ -259,11 +229,32 @@ int main()
         printf("Escolha uma opcao: ");
         scanf("%d", &opcao);
         getchar();
-
         switch (opcao) {
             case 1:
-                printf("Opcao de Consulta selecionada.\n");
-
+                printf("Opcao de CONSULTA selecionada.\n");
+                int opcaoConsulta;
+                do {
+                    printf("1 - Incluir\n");
+                    printf("2 - Listar\n");
+                    printf("3 - Alterar\n");
+                    printf("4 - Pesquisar\n");
+                    printf("5 - Excluir\n");
+                    printf("6 - Voltar\n");
+                    printf("Escolha uma opção: ");
+                    scanf("%d", &opcaoConsulta);
+                    getchar();
+                    if (opcaoConsulta == 1) {
+                        incluirConsulta();
+                    } else if (opcaoConsulta == 2) {
+                        listaConsultas();
+                    } else if (opcaoConsulta == 3) {
+                        alterarConsulta();
+                    } else if(opcaoConsulta == 4) {
+                        pesquisarConsulta();
+                    } else if(opcaoConsulta == 5) {
+                        excluirConsulta();
+                    }
+                } while (opcaoConsulta != 6);
                 break;
             case 2:
                 printf("Opcao de PACIENTE selecionada.\n");
@@ -329,5 +320,38 @@ int main()
                 printf("Opcao invalida.\n");
         }
     } while (opcao != 5);
+}
+void inciarArquivos(){
+    FILE *arqmed = fopen("medicos.bin","r");
+    if(arqmed==NULL){
+        FILE *arqmed = fopen("medicos.bin","w");
+        fclose(arqmed);
+    }
+    else{
+        fclose(arqmed);
+    }
+
+    FILE *arqpac = fopen("pacientes.bin","r");
+    if(arqmed==NULL){
+        FILE *arqpac = fopen("pacientes.bin","w");
+        fclose(arqpac);
+    }
+    else{
+        fclose(arqpac);
+    }
+
+    FILE *arqcons = fopen("consultas.bin","r");
+    if(arqcons==NULL){
+        FILE *arqcons = fopen("cansultas.bin","w");
+        fclose(arqcons);
+    }
+    else{
+        fclose(arqcons);
+    }
+}
+int main()
+{
+    inciarArquivos();
+    menu();
     return 0;
 }
