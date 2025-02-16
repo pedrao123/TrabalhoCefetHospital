@@ -55,5 +55,46 @@ int main()
         fclose(arqcons);
     }
     
+    int opcao;
+    do{
+        printf("\nMenu Principal:\n");
+        printf("1 - Consulta\n");
+        printf("2 - Paciente\n");
+        printf("3 - Medico\n");
+        printf("4 - Relatorios\n");
+        printf("5 - Sair\n");
+        printf("Escolha uma opcao: ");
+        scanf("%d", &opcao);
+        getchar();
+
+        switch (opcao) {
+            case 1:
+                printf("Opcao de Consulta selecionada.\n");
+
+                break;
+            case 2:
+                printf("Opcao de Paciente selecionada.\n");
+
+                break;
+            case 3:
+                printf("Opcao de Medico selecionada.\n");
+
+                break;
+            case 4:
+                printf("Opcao de Relatorios selecionada.\n");
+
+                break;
+            case 5:
+                printf("Saindo...\n");
+
+                break;
+            default:
+                printf("Opcao invalida.\n");
+        }
+    } while (opcao != 5);
+
+
+
+
     return 0;
 }
