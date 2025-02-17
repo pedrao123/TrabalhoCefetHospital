@@ -181,9 +181,12 @@ void listarMedicos() {
 
 void excluirPaciente() {
     FILE *arq = fopen("pacientes.bin", "rb");
+    FILE *arq2 = fopen("consultas.bin", "rb");
     FILE *temp = fopen("temp.bin", "wb");
+    FILE *temp2 = fopen("temp2.bin", "wb");
     if (!arq || !temp) return;
     paciente p;
+    consulta c;
     int id;
     printf("Digite o ID do paciente a excluir: ");
     scanf("%d", &id);
@@ -192,18 +195,34 @@ void excluirPaciente() {
         if (p.id != id) {
             fwrite(&p, sizeof(paciente), 1, temp);
         }
+        else{
+            printf("O paciente :\nID: %d\nNome: %s\nIdentidade: %s\nEndereco: %s\nTelefone: %s\nSexo: %s\nfoi excluido com sucesso\n", 
+                p.id, p.nome, p.identidade, p.endereco, p.telefone, p.sexo);
+        }
     }
+    while (fread(&c, sizeof(consulta), 1, arq)){
+        if(id != c.idPaciente){
+            fwrite(&c, sizeof(consulta), 1, temp2);
+        }
+    }
+    fclose(arq2);
+    fclose(temp2);
     fclose(arq);
     fclose(temp);
     remove("pacientes.bin");
+    remove("consultas.bin");
     rename("temp.bin", "pacientes.bin");
+    rename("temp2.bin", "consultas.bin");
 }
 
 void excluirMedico() {
     FILE *arq = fopen("medicos.bin", "rb");
+    FILE *arq2 = fopen("consultas.bin", "rb");
     FILE *temp = fopen("temp.bin", "wb");
+    FILE *temp2 = fopen("temp2.bin", "wb");
     if (!arq || !temp) return;
     medico m;
+    consulta c;
     int id;
     printf("Digite o ID do medico a excluir: ");
     scanf("%d", &id);
@@ -212,10 +231,23 @@ void excluirMedico() {
         if (m.id != id) {
             fwrite(&m, sizeof(medico), 1, temp);
         }
+        else{
+            printf("O medico:\nID: %d, Nome: %s, Especialidade: %s\nFoi excluido com sucesso\n", m.id, m.nome, m.especialidade);
+        }
     }
+    while (fread(&c,sizeof(consulta),1,temp2))
+    {
+        if(id!=c.idMedico){
+            fwrite(&c,sizeof(consulta),1,temp2);
+        }
+    }
+    fclose(arq2);
+    fclose(temp2);
     fclose(arq);
     fclose(temp);
+    remove("consultas.bin");
     remove("medicos.bin");
+    rename("temp2.bin","consultas.bin");
     rename("temp.bin", "medicos.bin");
 }
 
@@ -289,8 +321,8 @@ void pesquisarConsulta() {
 }
 
 void excluirConsulta(){
-    FILE *arq = fopen("consultas.bin","r");
-    FILE *temp = fopen("temp.bin","w");
+    FILE *arq = fopen("consultas.bin","rb");
+    FILE *temp = fopen("temp.bin","wb");
     consulta c;
     printf("Digite o numero da consulta que deseja excluir:\n");
     int n;
@@ -311,7 +343,7 @@ void excluirConsulta(){
 }
 void relatorioPaciente(){
     int id;
-    FILE *arq = fopen("consultas.bin","r");
+    FILE *arq = fopen("consultas.bin","rb");
     printf("digite o id do paciente:\n");
     scanf("%d",&id);
     consulta c;
@@ -327,7 +359,7 @@ void relatorioPaciente(){
 
 void relatorioMedico(){
     int id;
-    FILE *arq = fopen("consultas.bin","r");
+    FILE *arq = fopen("consultas.bin","rb");
     printf("digite o id do medico:\n");
     scanf("%d",&id);
     consulta c;
@@ -342,7 +374,7 @@ void relatorioMedico(){
 
 void relatorioEspecialidades(){
     char especialidade[MaxCaracteres];
-    FILE *arq = fopen("medicos.bin","r");
+    FILE *arq = fopen("medicos.bin","rb");
     printf("digite a especialidade:\n");
     scanf(" %[^\n]",especialidade);
     medico m;
@@ -492,7 +524,7 @@ void inciarArquivos(){
 
     FILE *arqcons = fopen("consultas.bin","r");
     if(arqcons==NULL){
-        FILE *arqcons = fopen("cansultas.bin","w");
+        FILE *arqcons = fopen("consultas.bin","w");
         fclose(arqcons);
     }
     else{
