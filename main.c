@@ -59,7 +59,7 @@ void incluirMedico() {
     printf("Digite o nome do medico: ");
     fgets(m.nome, MaxCaracteres, stdin);
     printf("Digite a especialidade: ");
-    fgets(m.especialidade, MaxCaracteres, stdin);
+    scanf(" %[^\n]",&m.especialidade);
     fwrite(&m, sizeof(medico), 1, arq);
     fclose(arq);
 }
@@ -232,11 +232,11 @@ void incluirConsulta() {
     printf("Digite o ID do paciente: ");
     scanf("%d", &c.idPaciente);
     printf("Digite o horario da consulta: ");
-    scanf("%s", c.horario);
+    scanf(" %[^\n]", c.horario);
     printf("Digite a duracao da consulta: ");
-    scanf("%s", c.duracao);
+    scanf(" %[^\n]", c.duracao);
     printf("Digite a data da consulta: ");
-    scanf("%s", c.data);
+    scanf(" %[^\n]", c.data);
     fwrite(&c, sizeof(consulta), 1, arq);
     fclose(arq);
     printf("Consulta cadastrada com sucesso!\n");
@@ -252,16 +252,16 @@ void alterarConsulta() {
     while (fread(&c, sizeof(consulta), 1, arq)) {
         if (c.numero == numero) {
             printf("Consulta encontrada! Digite os novos dados:\n");
-            printf("Digite o ID do médico: ");
+            printf("Digite o ID do medico: ");
             scanf("%d", &c.idMedico);
             printf("Digite o ID do paciente: ");
             scanf("%d", &c.idPaciente);
             printf("Digite o horario da consulta: ");
-            scanf("%s", c.horario);
-            printf("Digite a duração da consulta: ");
-            scanf("%s", c.duracao);
+            scanf(" %[^\n]", c.horario);
+            printf("Digite a duracao da consulta: ");
+            scanf(" %[^\n]", c.duracao);
             printf("Digite a data da consulta: ");
-            scanf("%s", c.data);
+            scanf(" %[^\n]", c.data);
             fseek(arq, -sizeof(consulta), SEEK_CUR);
             fwrite(&c, sizeof(consulta), 1, arq);
             fclose(arq);
@@ -292,7 +292,7 @@ void excluirConsulta(){
     FILE *arq = fopen("consultas.bin","r");
     FILE *temp = fopen("temp.bin","w");
     consulta c;
-    printf("Digite o numero da consulta que deseja excluir\n");
+    printf("Digite o numero da consulta que deseja excluir:\n");
     int n;
     scanf("%d",&n);
     while (fread(&c,sizeof(consulta),1,arq)==1)
@@ -301,7 +301,7 @@ void excluirConsulta(){
             fwrite(&c,sizeof(consulta),1,temp);
         }
         else{
-            printf("Consulta as %s dia %s excluida com sucesso\n",c.data,c.horario);
+            printf("Consulta as %s dia %s excluida com sucesso!\n",c.data,c.horario);
         }
     }
     fclose(arq);
@@ -309,7 +309,51 @@ void excluirConsulta(){
     remove("consultas.bin");
     rename("temp.bin","pacientes.bin");
 }
+void relatorioPaciente(){
+    int id;
+    FILE *arq = fopen("consultas.bin","r");
+    printf("digite o id do paciente:\n");
+    scanf("%d",&id);
+    consulta c;
+    while (fread(&c,sizeof(consulta),1,arq)==1)
+    {
+        if (id==c.idPaciente)
+        {
+            printf ("Numero: %d\nMedico ID: %d\nPaciente ID: %d\nHorario: %s\nDuracao: %s\nData: %s\n\n", c.numero, c.idMedico, c.idPaciente, c.horario, c.duracao, c.data);
+        }
+    }
+    fclose(arq);
+}
 
+void relatorioMedico(){
+    int id;
+    FILE *arq = fopen("consultas.bin","r");
+    printf("digite o id do medico:\n");
+    scanf("%d",&id);
+    consulta c;
+    while (fread(&c,sizeof(consulta),1,arq)==1){
+        if (id==c.idMedico)
+        {
+            printf ("Numero: %d\nMedico ID: %d\nPaciente ID: %d\nHorario: %s\nDuracao: %s\nData: %s\n\n", c.numero, c.idMedico, c.idPaciente, c.horario, c.duracao, c.data);
+        }
+    }
+    fclose(arq);
+}
+
+void relatorioEspecialidades(){
+    char especialidade[MaxCaracteres];
+    FILE *arq = fopen("medicos.bin","r");
+    printf("digite a especialidade:\n");
+    scanf(" %[^\n]",especialidade);
+    medico m;
+    while (fread(&m,sizeof(medico),1,arq)==1)
+    {
+        if(strcmp(especialidade,m.especialidade)==0){
+            printf("ID: %d, Nome: %s\n", m.id, m.nome);
+        }
+    }
+    fclose(arq);
+}
 
 void menu(){
     int opcao;
@@ -409,11 +453,11 @@ void menu(){
                     printf("4 - Voltar\n");
                     scanf("%d",&opcaoRelatorios);
                     if (opcaoRelatorios == 1){
-
+                        relatorioPaciente();
                     } else if (opcaoRelatorios == 2){
-
+                        relatorioMedico();
                     } else if (opcaoRelatorios == 3){
-
+                        relatorioEspecialidades();
                     }
                 } while (opcaoRelatorios != 4);
                 break;
