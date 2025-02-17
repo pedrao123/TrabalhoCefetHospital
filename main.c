@@ -75,14 +75,14 @@ void pesquisarPaciente() {
     busca[strcspn(busca, "\n")] = 0;
     while (fread(&p, sizeof(paciente), 1, arq)) {
         if (p.id == atoi(busca) || strcmp(p.nome, busca) == 0) {
-            printf("ID: %d\nNome: %s\nIdentidade: %s\nEndereço: %s\nTelefone: %s\nSexo: %s\n", 
+            printf("ID: %d\nNome: %s\nIdentidade: %s\nEndereco: %s\nTelefone: %s\nSexo: %s\n", 
                 p.id, p.nome, p.identidade, p.endereco, p.telefone, p.sexo);
             encontrado = 1;
             break;
         }
     }
     fclose(arq);
-    if (!encontrado) printf("Paciente não encontrado.\n");
+    if (!encontrado) printf("Paciente nao encontrado.\n");
 }
 
 void pesquisarMedico() {
@@ -102,7 +102,7 @@ void pesquisarMedico() {
         }
     }
     fclose(arq);
-    if (!encontrado) printf("Médico não encontrado.\n");
+    if (!encontrado) printf("Medico não encontrado.\n");
 }
 
 void alterarPaciente() {
@@ -142,7 +142,7 @@ void alterarMedico() {
     medico m;
     int idBusca, encontrado = 0;
     char nomeBusca[MaxCaracteres];
-    printf("Digite o ID ou Nome do médico a alterar: ");
+    printf("Digite o ID ou Nome do medico a alterar: ");
     fgets(nomeBusca, MaxCaracteres, stdin);
     nomeBusca[strcspn(nomeBusca, "\n")] = 0;
     while (fread(&m, sizeof(medico), 1, arq)) {
@@ -158,7 +158,7 @@ void alterarMedico() {
         }
     }
     fclose(arq);
-    if (!encontrado) printf("Médico não encontrado.\n");
+    if (!encontrado) printf("Medico não encontrado.\n");
 }
 
 void listarPacientes() {
@@ -205,7 +205,7 @@ void excluirMedico() {
     if (!arq || !temp) return;
     medico m;
     int id;
-    printf("Digite o ID do médico a excluir: ");
+    printf("Digite o ID do medico a excluir: ");
     scanf("%d", &id);
     getchar();
     while (fread(&m, sizeof(medico), 1, arq)) {
@@ -225,15 +225,15 @@ void incluirConsulta() {
     FILE *arq = fopen("consultas.bin", "ab");
     if (!arq) return;
     consulta c;
-    printf("Digite o número da consulta: ");
+    printf("Digite o numero da consulta: ");
     scanf("%d", &c.numero);
-    printf("Digite o ID do médico: ");
+    printf("Digite o ID do medico: ");
     scanf("%d", &c.idMedico);
     printf("Digite o ID do paciente: ");
     scanf("%d", &c.idPaciente);
-    printf("Digite o horário da consulta: ");
+    printf("Digite o horario da consulta: ");
     scanf("%s", c.horario);
-    printf("Digite a duração da consulta: ");
+    printf("Digite a duracao da consulta: ");
     scanf("%s", c.duracao);
     printf("Digite a data da consulta: ");
     scanf("%s", c.data);
@@ -247,7 +247,7 @@ void alterarConsulta() {
     if (!arq) return;
     consulta c;
     int numero;
-    printf("Digite o número da consulta a alterar: ");
+    printf("Digite o numero da consulta a alterar: ");
     scanf("%d", &numero);
     while (fread(&c, sizeof(consulta), 1, arq)) {
         if (c.numero == numero) {
@@ -256,7 +256,7 @@ void alterarConsulta() {
             scanf("%d", &c.idMedico);
             printf("Digite o ID do paciente: ");
             scanf("%d", &c.idPaciente);
-            printf("Digite o horário da consulta: ");
+            printf("Digite o horario da consulta: ");
             scanf("%s", c.horario);
             printf("Digite a duração da consulta: ");
             scanf("%s", c.duracao);
@@ -270,7 +270,7 @@ void alterarConsulta() {
         }
     }
     fclose(arq);
-    printf("Consulta não encontrada!\n");
+    printf("Consulta nao encontrada!\n");
 }
 
 void pesquisarConsulta() {
@@ -282,10 +282,32 @@ void pesquisarConsulta() {
     scanf("%d", &busca);
     while (fread(&c, sizeof(consulta), 1, arq)) {
         if ((c.numero == busca)) {
-            printf("Consulta encontrada:\nNúmero: %d\nMédico ID: %d\nPaciente ID: %d\nHorário: %s\nDuração: %s\nData: %s\n", c.numero, c.idMedico, c.idPaciente, c.horario, c.duracao, c.data);
+            printf("Consulta encontrada:\nNumero: %d\nMedico ID: %d\nPaciente ID: %d\nHorario: %s\nDuracao: %s\nData: %s\n", c.numero, c.idMedico, c.idPaciente, c.horario, c.duracao, c.data);
         }
     }
     fclose(arq);
+}
+
+void excluirConsulta(){
+    FILE *arq = fopen("consultas.bin","r");
+    FILE *temp = fopen("temp.bin","w");
+    consulta c;
+    printf("Digite o numero da consulta que deseja excluir\n");
+    int n;
+    scanf("%d",&n);
+    while (fread(&c,sizeof(consulta),1,arq)==1)
+    {
+        if(c.numero!=n){
+            fwrite(&c,sizeof(consulta),1,temp);
+        }
+        else{
+            printf("Consulta as %s dia %s excluida com sucesso\n",c.data,c.horario);
+        }
+    }
+    fclose(arq);
+    fclose(temp);
+    remove("consultas.bin");
+    rename("temp.bin","pacientes.bin");
 }
 
 
@@ -311,7 +333,7 @@ void menu(){
                     printf("3 - Pesquisar\n");
                     printf("4 - Excluir\n");
                     printf("5 - Voltar\n");
-                    printf("Escolha uma opção: ");
+                    printf("Escolha uma opcao: ");
                     scanf("%d", &opcaoConsulta);
                     getchar();
                     if (opcaoConsulta == 1) {
@@ -335,7 +357,7 @@ void menu(){
                     printf("4 - Pesquisar\n");
                     printf("5 - Excluir\n");
                     printf("6 - Voltar\n");
-                    printf("Escolha uma opção: ");
+                    printf("Escolha uma opcao: ");
                     scanf("%d", &opcaoPaciente);
                     getchar();
                     if (opcaoPaciente == 1) {
@@ -361,13 +383,13 @@ void menu(){
                 printf("4 - Pesquisar\n");
                 printf("5 - Excluir\n");
                 printf("6 - Voltar\n");
-                printf("Escolha uma opção: ");
+                printf("Escolha uma opcao: ");
                 scanf("%d", &opcaoMedico);
                 getchar();
                 if (opcaoMedico == 1) {
                     incluirMedico();
                 } else if (opcaoMedico == 2) {
-                    listarMedico();
+                    listarMedicos();
                 } else if (opcaoMedico == 3) {
                     alterarMedico();
                 } else if(opcaoMedico == 4) {
