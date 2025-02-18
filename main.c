@@ -116,6 +116,8 @@ void alterarPaciente() {
     nomeBusca[strcspn(nomeBusca, "\n")] = 0;
     while (fread(&p, sizeof(paciente), 1, arq)) {
         if (p.id == atoi(nomeBusca) || strcmp(p.nome, nomeBusca) == 0) {
+            printf("\nPaciente encontrado!\n");
+            printf("Nome atual: %s\nIdentidade atual: %s\nEndereço atual: %s\nTelefone atual: %s\nSexo atual: %s\n\n",p.nome, p.identidade, p.endereco, p.telefone, p.sexo);
             printf("Novo nome: ");
             fgets(p.nome, MaxCaracteres, stdin);
             printf("Nova identidade: ");
@@ -147,6 +149,8 @@ void alterarMedico() {
     nomeBusca[strcspn(nomeBusca, "\n")] = 0;
     while (fread(&m, sizeof(medico), 1, arq)) {
         if (m.id == atoi(nomeBusca) || strcmp(m.nome, nomeBusca) == 0) {
+            printf("Medico encontrado!!\n");
+            printf("Nome atual: %s\nEspecialidade atual: %s\n\n", m.nome, m.especialidade);
             printf("Novo nome: ");
             fgets(m.nome, MaxCaracteres, stdin);
             printf("Nova especialidade: ");
@@ -184,7 +188,10 @@ void excluirPaciente() {
     FILE *arq2 = fopen("consultas.bin", "rb");
     FILE *temp = fopen("temp.bin", "wb");
     FILE *temp2 = fopen("temp2.bin", "wb");
-    if (!arq || !temp) return;
+    if (!arq || !arq2 || !temp || !temp2) {
+        printf("Erro ao abrir arquivos.\n");
+        return;
+    }
     paciente p;
     consulta c;
     int id;
@@ -200,7 +207,7 @@ void excluirPaciente() {
                 p.id, p.nome, p.identidade, p.endereco, p.telefone, p.sexo);
         }
     }
-    while (fread(&c, sizeof(consulta), 1, arq)){
+    while (fread(&c, sizeof(consulta), 1, arq2)){
         if(id != c.idPaciente){
             fwrite(&c, sizeof(consulta), 1, temp2);
         }
@@ -220,7 +227,10 @@ void excluirMedico() {
     FILE *arq2 = fopen("consultas.bin", "rb");
     FILE *temp = fopen("temp.bin", "wb");
     FILE *temp2 = fopen("temp2.bin", "wb");
-    if (!arq || !temp) return;
+    if (!arq || !arq2 || !temp || !temp2) {
+        printf("Erro ao abrir arquivos.\n");
+        return;
+    }
     medico m;
     consulta c;
     int id;
@@ -235,7 +245,7 @@ void excluirMedico() {
             printf("O medico:\nID: %d, Nome: %s, Especialidade: %s\nFoi excluido com sucesso\n", m.id, m.nome, m.especialidade);
         }
     }
-    while (fread(&c,sizeof(consulta),1,temp2))
+    while (fread(&c,sizeof(consulta),1,arq2))
     {
         if(id!=c.idMedico){
             fwrite(&c,sizeof(consulta),1,temp2);
@@ -283,6 +293,8 @@ void alterarConsulta() {
     scanf("%d", &numero);
     while (fread(&c, sizeof(consulta), 1, arq)) {
         if (c.numero == numero) {
+            printf("Consulta encontrada!!\n");
+            printf("Médico ID atual: %d\nPaciente ID atual: %d\nHorário atual: %s\nDuração atual: %s\nData atual: %s\n\n",c.idMedico, c.idPaciente, c.horario, c.duracao, c.data);
             printf("Consulta encontrada! Digite os novos dados:\n");
             printf("Digite o ID do medico: ");
             scanf("%d", &c.idMedico);
@@ -339,7 +351,7 @@ void excluirConsulta(){
     fclose(arq);
     fclose(temp);
     remove("consultas.bin");
-    rename("temp.bin","pacientes.bin");
+    rename("temp.bin","consultas.bin");
 }
 void relatorioPaciente(){
     int id;
