@@ -154,7 +154,7 @@ void alterarMedico() {
             printf("Novo nome: ");
             fgets(m.nome, MaxCaracteres, stdin);
             printf("Nova especialidade: ");
-            fgets(m.especialidade, MaxCaracteres, stdin);
+            scanf("%[^\n]",m.especialidade);
             fseek(arq, -sizeof(medico), SEEK_CUR);
             fwrite(&m, sizeof(medico), 1, arq);
             encontrado = 1;
@@ -428,6 +428,38 @@ void relatorioEspecialidades(){
     }
     fclose(arq);
 }
+void relatorioEspecialidadespaciente(){
+    char especialidade[MaxCaracteres];
+    FILE *arq = fopen("medicos.bin","rb");
+    FILE *arq2 = fopen("pacientes.bin","rb");
+    FILE *arq3 = fopen("consultas.bin","rb");
+    printf("digite a especialidade:\n");
+    scanf(" %[^\n]",especialidade);
+    medico m;
+    consulta c;
+    paciente p;
+    while (fread(&m,sizeof(medico),1,arq)==1)
+    {
+        if(strcmp(especialidade,m.especialidade)==0){
+            while (fread(&c,sizeof(consulta),1,arq3)==1)
+            {
+                if(c.idMedico==m.id){
+                    while (fread(&p,sizeof(paciente),1,arq2)==1)
+                    {
+                        if(c.idPaciente==p.id){
+                            printf("ID: %d, Nome: %s, Identidade: %s, Endereco: %s, Telefone: %s, Sexo: %s\n", p.id, p.nome, p.identidade, p.endereco, p.telefone, p.sexo);
+                        }
+                    }
+                    
+                }
+            }
+            
+        }
+    }
+    fclose(arq);
+    fclose(arq2);
+    fclose(arq3);
+}
 
 void menu(){
     int opcao;
@@ -528,7 +560,8 @@ void menu(){
                     printf("1 - Lista de consultas agendadas para o paciente\n");
                     printf("2 - Lista de consultas agendadas para o medico\n");
                     printf("3 - Lista de medicos por especialidade\n");
-                    printf("4 - Voltar\n");
+                    printf("4 - Lista de pacientes por especialidade\n");
+                    printf("5 - Voltar\n");
                     scanf("%d",&opcaoRelatorios);
                     if (opcaoRelatorios == 1){
                         relatorioPaciente();
@@ -537,7 +570,10 @@ void menu(){
                     } else if (opcaoRelatorios == 3){
                         relatorioEspecialidades();
                     }
-                } while (opcaoRelatorios != 4);
+                    else if(opcaoRelatorios == 4){
+                        relatorioEspecialidadespaciente();
+                    }
+                } while (opcaoRelatorios != 5);
                 break;
             case 5:
                 printf("Saindo...\n");
