@@ -353,6 +353,36 @@ void excluirConsulta(){
     remove("consultas.bin");
     rename("temp.bin","consultas.bin");
 }
+
+void listarConsultas() {
+    FILE *arq = fopen("consultas.bin", "rb");
+    if (!arq) {
+        printf("Erro ao abrir o arquivo de consultas.\n");
+        return;
+    }
+
+    consulta c;
+    printf("\n=== Lista de Consultas ===\n");
+    int encontrou = 0;
+
+    while (fread(&c, sizeof(consulta), 1, arq)) {
+        printf("\nNúmero da consulta: %d\n", c.numero);
+        printf("ID do Médico: %d\n", c.idMedico);
+        printf("ID do Paciente: %d\n", c.idPaciente);
+        printf("Horário: %s\n", c.horario);
+        printf("Duração: %s\n", c.duracao);
+        printf("Data: %s\n", c.data);
+        encontrou = 1;
+    }
+
+    fclose(arq);
+
+    if (!encontrou) {
+        printf("Nenhuma consulta cadastrada.\n");
+    }
+}
+
+
 void relatorioPaciente(){
     int id;
     FILE *arq = fopen("consultas.bin","rb");
