@@ -366,10 +366,10 @@ void listarConsultas() {
     int encontrou = 0;
 
     while (fread(&c, sizeof(consulta), 1, arq)) {
-        printf("\nNúmero da consulta: %d\n", c.numero);
-        printf("ID do Médico: %d\n", c.idMedico);
+        printf("\nNumero da consulta: %d\n", c.numero);
+        printf("ID do Medico: %d\n", c.idMedico);
         printf("ID do Paciente: %d\n", c.idPaciente);
-        printf("Horário: %s\n", c.horario);
+        printf("Horario: %s\n", c.horario);
         printf("Duração: %s\n", c.duracao);
         printf("Data: %s\n", c.data);
         encontrou = 1;
@@ -450,7 +450,8 @@ void menu(){
                     printf("2 - Alterar\n");
                     printf("3 - Pesquisar\n");
                     printf("4 - Excluir\n");
-                    printf("5 - Voltar\n");
+                    printf("5 - Listar\n");
+                    printf("6 - Voltar\n");
                     printf("Escolha uma opcao: ");
                     scanf("%d", &opcaoConsulta);
                     getchar();
@@ -463,7 +464,10 @@ void menu(){
                     } else if(opcaoConsulta == 4) {
                         excluirConsulta();
                     }
-                } while (opcaoConsulta != 5);
+                    else if(opcaoConsulta == 5) {
+                        listarConsultas();
+                    }
+                } while (opcaoConsulta != 6);
                 break;
             case 2:
                 printf("Opcao de PACIENTE selecionada.\n");
